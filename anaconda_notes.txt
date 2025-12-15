@@ -1,0 +1,20 @@
+# Step by step to create a new project
+1. Create env
+conda create --prefix .\env
+
+2. Activate env
+conda activate .\env
+
+3. Install jupyter
+conda install jupyter
+
+4. Start jupyter
+jupyter notebook
+
+#-------------------------
+5. Check/update version
+conda --version / conda list anaconda
+conda update --all
+
+6. Install libs
+conda install polars # similar to pandas, datatable, but faster
