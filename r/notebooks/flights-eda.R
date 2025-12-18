@@ -174,75 +174,83 @@ format_compact <- function(n) {
 # 3.1 Homepage
 # Summary
 #==================================#
-pct_vs_baseline <- function(df, year, baseline){
+pct_vs_baseline <- function(df, year, baseline, col) {
   n_year <- df |>
     filter(YEAR == year) |>
-    pull(n_flights)
+    pull({{col}})
   
-  n_bsl <- df |>
+  n_base <- df |>
     filter(YEAR == baseline) |>
-    pull(n_flights)
+    pull({{col}})
   
-  round(((n_year - n_bsl) / n_bsl) * 100, 2)
+  round((n_year - n_base) / n_base * 100, 2)
 }
 
 #----------------------------------#
 flight_yearly <- df_flights |>
   group_by(YEAR) |>
-  summarise(n_flights = n()) |>
-  ungroup()
+  summarise(n_flights = n(), .groups = "drop")
 
+# Cancelled
 df_cancel <- df_flights |>
   filter(CANCELLED == 1) |>
   group_by(YEAR) |>
-  summarise(n_flights = n()) |>
-  ungroup()
+  summarise(n_cancelled = n(), .groups = "drop")
 
-df_delay <- df_flights |>
-  filter(DEP_DELAY > 15) |>
-  group_by(YEAR) |>
-  summarise(n_flights = n()) |>
-  ungroup()
-
-df_ontime <- df_flights |>
-  filter(DEP_DELAY <= 15) |>
-  group_by(YEAR) |>
-  summarise(n_flights = n()) |>
-  ungroup()
-
+# Diverted
 df_divert <- df_flights |>
   filter(DIVERTED == 1) |>
   group_by(YEAR) |>
-  summarise(n_flights = n()) |>
-  ungroup()
+  summarise(n_diverted = n(), .groups = "drop")
 
-pct_23_19_flight <- pct_vs_baseline(flight_yearly, 2023, 2019)
-pct_23_19_cancel <- pct_vs_baseline(df_cancel, 2023, 2019)
-pct_23_19_delay <- pct_vs_baseline(df_delay, 2023, 2019)
-pct_23_19_ontime <- pct_vs_baseline(df_ontime, 2023, 2019)
-pct_23_19_divert <- pct_vs_baseline(df_divert, 2023, 2019)
+# Operated flights (without cancelled/diverted)
+df_operated <- df_flights |>
+  filter(CANCELLED == 0, DIVERTED == 0) |>
+  group_by(YEAR) |>
+  summarise(n_operated = n(), .groups = "drop")
 
-#----------------------------------#
+# On-time / Delayed in operated flights
+df_ontime_delay <- df_flights |>
+  filter(CANCELLED == 0, DIVERTED == 0) |>
+  mutate(
+    n_ontime = ifelse(DEP_DELAY <= 15, 1, 0),
+    n_delayed = ifelse(DEP_DELAY > 15, 1, 0)
+  ) |>
+  group_by(YEAR) |>
+  summarise(
+    n_ontime = sum(n_ontime),
+    n_delayed = sum(n_delayed),
+    .groups = "drop"
+  )
+
+# Tính % vs baseline 2019
+pct_23_19_flight <- pct_vs_baseline(flight_yearly, 2023, 2019, n_flights)
+pct_23_19_cancel <- pct_vs_baseline(df_cancel, 2023, 2019, n_cancelled)
+pct_23_19_divert <- pct_vs_baseline(df_divert, 2023, 2019, n_diverted)
+pct_23_19_operated <- pct_vs_baseline(df_operated, 2023, 2019, n_operated)
+pct_23_19_ontime <- pct_vs_baseline(df_ontime_delay, 2023, 2019, n_ontime)
+pct_23_19_delayed <- pct_vs_baseline(df_ontime_delay, 2023, 2019, n_delayed)
+
+# Tổng số liệu hiện tại
 total_flights <- nrow(df_flights)
+total_airlines <- n_distinct(df_flights$AIRLINE)
+total_airports <- n_distinct(df_flights$ORIGIN)
+total_routes <- nrow(df_flights |>
+                       distinct(ORIGIN, DEST))
+
 total_flights_fmt <- format_compact(total_flights)
 
-total_airlines <- length(unique(df_flights$AIRLINE))
-total_airports <- length(unique(df_flights$ORIGIN))
-
-total_routes <- nrow(unique(df_flights[, c("ORIGIN", "DEST")]))
-
-cat(
-  "U.S. Flight Operations: 2019–2023",
-  "\nFlights volume:", pct_23_19_flight, "%",
-  "\nCancelled:", pct_23_19_cancel, "%",
-  "\nDelays:", pct_23_19_delay, "%",
-  "\nDiverted:", pct_23_19_divert, "%",
-  "\nOn-time:", pct_23_19_ontime, "%",
-  "\ntotal_flights:", total_flights_fmt,
-  "\ntotal_airlines:", total_airlines,
-  "\ntotal_airports:", total_airports,
-  "\ntotal_routes:", total_routes
-)
+cat(sprintf("U.S. Flight Operations: 2019–2023\n"))
+cat(sprintf("Flights volume vs 2019: %s%%\n", pct_23_19_flight))
+cat(sprintf("Cancelled vs 2019: %s%%\n", pct_23_19_cancel))
+cat(sprintf("Diverted vs 2019: %s%%\n", pct_23_19_divert))
+cat(sprintf("Operated vs 2019: %s%%\n", pct_23_19_operated))
+cat(sprintf("  - On-time vs 2019: %s%%\n", pct_23_19_ontime))
+cat(sprintf("  - Delayed vs 2019: %s%%\n", pct_23_19_delayed))
+cat(sprintf("Total flights: %s\n", total_flights_fmt))
+cat(sprintf("Total airlines: %s\n", total_airlines))
+cat(sprintf("Total airports: %s\n", total_airports))
+cat(sprintf("Total routes: %s\n", total_routes))
 
 #==================================#
 # Chart: Weekly Distribution
