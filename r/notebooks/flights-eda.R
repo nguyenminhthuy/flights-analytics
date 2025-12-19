@@ -150,9 +150,9 @@ check_missing_cols(df_flights)
 #----------------------------------#
 # Remove na
 #----------------------------------#
-df_flights <- df_flights |>
-  drop_na(ORIGIN_LAT, ORIGIN_LON,
-          DEST_LAT, DEST_LON)
+# df_flights <- df_flights |>
+#   drop_na(ORIGIN_LAT, ORIGIN_LON,
+#           DEST_LAT, DEST_LON)
 
 #==================================#
 # 2.3 Format numbers
@@ -172,7 +172,7 @@ format_compact <- function(n) {
 #==================================#
 # 3. EDA
 # 3.1 Homepage
-# Summary
+# Summary (Group_by --> Filter last year & first year)
 #==================================#
 pct_vs_baseline <- function(df, year, baseline, col) {
   n_year <- df |>
@@ -457,6 +457,7 @@ df_flights <- df_flights |>
   )
 
 df_origin_airport <- df_flights |>
+  filter(!is.na(ORIGIN_LAT) & !is.na(ORIGIN_LON)) |>   # loại bỏ dòng NA
   group_by(ORIGIN_AIRPORT, ORIGIN_LAT, ORIGIN_LON) |>
   summarise(n_flights = n(), .groups = "drop") |>
   mutate(text = sapply(n_flights, format_compact))
