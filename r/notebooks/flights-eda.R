@@ -353,21 +353,21 @@ df_air_rank <- df_flights |>
   )
 
 fig_2 <- plot_ly(
-  df_air_rank,
-  x = ~n_flights, y = ~AIRLINE,
-  type = "bar",
-  orientation = "h",
-  text = ~text,
-  textposition = "outside",
-  cliponaxis = FALSE,
-  opacity = 0.8,
-  marker = list(color = "#59cf5a"),
-  #height = 500
+  data = df_air_rank
 ) |>
+  add_bars(
+    x = ~n_flights,
+    y = ~AIRLINE,
+    orientation = "h",
+    text = ~text,
+    textposition = "outside",
+    marker = list(color = "#59cf5a"),
+    opacity = 0.8
+  ) |>
   layout(
     yaxis = list(
       title = "",
-      autorange = "reversed" # đảo trục y
+      autorange = "reversed"
     ),
     xaxis = list(
       title = "",
@@ -447,14 +447,15 @@ df_distance_departures <- df_flights |>
   arrange(DISTANCE_CAT)
 
 fig_4 <- plot_ly(
-  df_distance_departures,
-  x = ~DISTANCE_CAT, y = ~n_flights,
-  type = "bar",
-  color = ~DISTANCE_CAT,
-  colors = c("#f76af7", "#e8b76d", "#51d6b3"),
-  opacity = 0.8,
-  #height = 400
+  data = df_distance_departures
 ) |>
+  add_bars(
+    x = ~DISTANCE_CAT,
+    y = ~n_flights,
+    color = ~DISTANCE_CAT,
+    colors = c("#f76af7", "#e8b76d", "#51d6b3"),
+    opacity = 0.8
+  ) |>
   layout(
     showlegend = FALSE,
     xaxis = list(title = ""),
@@ -816,7 +817,7 @@ delay_causes <- function(df, year = NULL, airline = NULL) {
   
   df_delay_causes <- df |>
     select(all_of(delay_cols)) |>
-    summarise(across(everything(), sum, na.rm = TRUE)) |>
+    summarise(across(everything(), \(x) sum(x, na.rm = TRUE))) |>
     pivot_longer(
       everything(),
       names_to = "cause",
@@ -1222,7 +1223,7 @@ influence_of_delays <- function(df, year = NULL, airline = NULL, season = NULL) 
   
   values <- df |>
     select(all_of(delay_cols)) |>
-    summarise(across(everything(), mean, na.rm = TRUE)) |>
+    summarise(across(everything(), \(x) sum(x, na.rm = TRUE))) |>
     unlist(use.names = FALSE)
   
   rel <- values / max(values, na.rm = TRUE)
@@ -1646,32 +1647,4 @@ plot_cause_donut <- function(df, year = NULL, airline = NULL, season = NULL) {
 }
 
 plot_cause_donut(df_flights, season="Winter")  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
