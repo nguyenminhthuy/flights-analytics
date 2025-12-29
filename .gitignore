@@ -1,0 +1,17 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+# Python
+py/env/
+py/**/.ipynb_checkpoints/
+
+# Data files
+data/**/*.csv
+data/**/*.parquet
+
+# R
+r/r_shiny/
+
+# Excel temp files
+~$*.xlsx
