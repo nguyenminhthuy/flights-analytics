@@ -359,39 +359,38 @@ df_air_rank <- df_flights |>
   )
 
 fig_2 <- plot_ly(
-  data = df_air_rank
-) |>
-  add_bars(
-    x = ~n_flights,
-    y = ~AIRLINE,
-    orientation = "h",
-    text = ~text,
-    textposition = "outside",
-    marker = list(color = "#59cf5a"),
-    opacity = 0.8
-  ) |>
+  data = df_air_rank,
+  x = ~n_flights,
+  y = ~AIRLINE,
+  type = "bar",
+  orientation = "h",
+  marker = list(color = "#2dd4bf"),
+  hovertemplate = "<b>%{y}</b><br>%{customdata} flights<extra></extra>",
+  customdata = df_air_rank$text   # số đã format (3.2M)
+) |> 
   layout(
     yaxis = list(
-      title = "",
-      autorange = "reversed"
+      autorange = "reversed",
+      title = NULL,
+      color = "#F1F5F9"
     ),
     xaxis = list(
-      title = "",
-      showgrid = FALSE
+      showgrid = FALSE,
+      title = NULL,
+      color = "#F1F5F9"
     ),
     title = list(
       text = paste0(
         "AIRLINE RANKING",
-        "<br><span style='font-size:14px;color:#666;font-style:italic'>",
-        "by number of flights</span>"
+        "<br><span style='font-size:14px;color:#666;font-style:italic'>Flight Counts</span>"
       ),
       x = 0.5,
       xanchor = "center",
       font = list(size = 16, color = "#333", family = "Comic Sans MS")
     ),
     margin = list(l = 200, r = 50, t = 70, b = 10),
-    paper_bgcolor = "#f5f5f5",
-    plot_bgcolor  = "#f5f5f5"
+    paper_bgcolor = "rgba(0,0,0,0)",
+    plot_bgcolor = "rgba(0,0,0,0)"
   ) |>
   config(responsive = TRUE)
 
