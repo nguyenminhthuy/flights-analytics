@@ -352,7 +352,7 @@ df_air_rank <- df_flights |>
     text = sapply(n_flights, format_compact)
   )
 
-fig_2 <- plot_ly(
+fig_airline_rank <- plot_ly(
   data = df_air_rank,
   x = ~n_flights,
   y = ~AIRLINE,
@@ -388,7 +388,7 @@ fig_2 <- plot_ly(
   ) |>
   config(responsive = TRUE)
 
-fig_2
+fig_airline_rank
 
 #==================================#
 # Chart: Monthly Departures
@@ -580,11 +580,11 @@ ontime_delay_summary <- function(df, year = NULL, airline = NULL) {
 
   # Filter theo điều kiện (nếu có)
   if (!is.null(year)) {
-    df <- df |> filter(YEAR == year)
+    df <- filter_by_year(df, year)
   }
-
+  
   if (!is.null(airline)) {
-    df <- df |> filter(AIRLINE == airline)
+    df <- filter_by_airline(df, airline)
   }
 
   total_flights <- nrow(df)
@@ -1192,7 +1192,7 @@ m = arrival_delay_folium(df_flights, year = 2019, season="Winter")
 m
 
 #==================================#
-# 3.2.3 Local Patterns + With/Without Filter
+# 3.2.3 Factors + With/Without Filter
 # - Performance is evaluated relative to peer airlines under the selected filters.
 # - Results reflect comparative delay behavior rather than overall service quality.
 # Chart: INFLUENCE OF VARIOUS DELAYS
