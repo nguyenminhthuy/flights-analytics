@@ -1,37 +1,44 @@
-# U.S. Flight Operations (2019–2023)
+# ✈️ U.S. Flight Operations & Delay Risk Analysis
 
 ## Overview
 
-This project explores U.S. domestic flight operations from **2019–2023**, focusing on **traffic volume, delays, and disruptions**.
-The analysis is **EDA-driven and explainable**, designed to support future **rule-based risk assessment**.
+This project analyzes U.S. civil flight operations with a focus on **delay, disruption, and explainable risk assessment**. It combines structured EDA with an **interpretable, rule-based delay risk predictor** to help users understand *why* certain flights are more delay-prone under similar historical conditions.
+
+The goal is **understanding and explantion**, not pure prediction accuracy.
+
+---
+## Dataset
+
+**Data Source:**  
+U.S. Department of Transportation (BTS), accessed via  
+[Kaggle – Flight Delay and Cancellation Dataset (2019–2023)](https://www.kaggle.com/datasets/patrickzel/flight-delay-and-cancellation-dataset-2019-2023/data).
+
+---
+## Data Preparation
+
+* Feature engineering for time, season, routes, distance, and geolocation.
+* Data cleaning and validation for delays, cancellations, and diversions.
 
 ---
 
-## Data
+## Exploratory Data Analysis (EDA)
 
-* Flight-level records (2019–2023)
-* Airlines, airports, routes, time, distance
-* Outcomes: on-time, delayed, cancelled, diverted
-
+* Flight volume and delay patterns over time.
+* Airline and route performance comparisons.
+* Delay causes and disruption breakdowns.
+* Local patterns by airport, time of day, and season.
+* Geographic visualization of arrival delays.
 ---
 
-## What’s Inside
+## Delay Risk Prediction (No ML)
 
-* Feature engineering (time, distance, routes, geolocation)
-* System overview (volume, seasonality, network coverage)
-* Operational performance (on-time vs delayed)
-* Delay causes & propagation patterns
-* Local risk patterns (airports, routes, time of day)
-* Disruption analysis (cancellations & diversions)
+* User inputs; airline, route, flight date, time of date.
+* Each factor contributes a risk based on historical behavior.
+* Scores are aggregated into an overall risk level (low/medium/high).
+* Output includes clear explanation of why the risk is high or low.
 
----
+## Why no Machine Learning?
 
-## Tools
-
-Python · Polars · Plotly · Matplotlib · Folium
-
----
-
-## Author
-
-Thuy Nguyen
+* The objective is **interpretability**, not black-box prediction.
+* Historical flight delays are highly context-dependent and noisy.
+* Rule-based scoring allows transparent logic, clear reasoning for each risk factor, and easier validation and communication.
