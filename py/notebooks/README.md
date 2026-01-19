@@ -1,7 +1,5 @@
 # Flight Delay Risk Analytics
 
-## One-Page Summary
-
 This project estimates **flight delay / cancellation risk** using a **data-driven, rule-based approach**, with a **machine learning (ML) baseline** included strictly for benchmarking.
 
 Two deliverables are provided:
