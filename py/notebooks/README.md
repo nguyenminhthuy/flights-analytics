@@ -1,10 +1,13 @@
-# ✈️ U.S. Flight Operations & Delay Risk Analysis
+# Flight Delay Risk Analytics
 
-## Overview
+## One-Page Summary
 
-This project analyzes U.S. civil flight operations with a focus on **delay, disruption, and explainable risk assessment**. It combines structured EDA with an **interpretable, rule-based delay risk predictor** to help users understand *why* certain flights are more delay-prone under similar historical conditions.
+This project estimates **flight delay / cancellation risk** using a **data-driven, rule-based approach**, with a **machine learning (ML) baseline** included strictly for benchmarking.
 
-The goal is **understanding and explantion**, not pure prediction accuracy.
+Two deliverables are provided:
+
+* **R Shiny App** – interactive, explainable decision-support tool
+* **Python Analysis Script** – analysis and benchmarking artifact
 
 ---
 ## Dataset
@@ -14,31 +17,74 @@ U.S. Department of Transportation (BTS), accessed via
 [Kaggle – Flight Delay and Cancellation Dataset (2019–2023)](https://www.kaggle.com/datasets/patrickzel/flight-delay-and-cancellation-dataset-2019-2023/data).
 
 ---
-## Data Preparation
+## R Shiny App (Product-Oriented)
 
-* Feature engineering for time, season, routes, distance, and geolocation.
-* Data cleaning and validation for delays, cancellations, and diversions.
+**Purpose**
+Provide an interactive dashboard for exploring flight delay risk in a **transparent and explainable** way.
+
+**Core Logic**
+
+* Rule-based risk scoring derived from historical delay rates
+* Components include airline, route, time of day, season, and weekday/weekend
+* Each component contributes a normalized score (0–100)
+
+**Why Rule-Based?**
+
+* Clear explanation for each prediction
+* Stable and fast
+* Suitable for operational and non-technical users
+
+**What the App Outputs**
+
+* Overall risk score (0–100)
+* Risk level (Low / Medium / High)
+* Breakdown of contributing factors
+
+> The Shiny app intentionally avoids ML models to prioritize clarity and user trust.
 
 ---
 
-## Exploratory Data Analysis (EDA)
+## Python Script (Analysis & Benchmarking)
 
-* Flight volume and delay patterns over time.
-* Airline and route performance comparisons.
-* Delay causes and disruption breakdowns.
-* Local patterns by airport, time of day, and season.
-* Geographic visualization of arrival delays.
+**Purpose**
+Demonstrate analytical reasoning and technical decision-making behind the scoring logic.
+
+**Contents**
+
+1. Exploratory Data Analysis (EDA)
+2. Rule-based risk scoring (same logic as the Shiny app)
+3. ML baseline using Logistic Regression
+4. Quantitative comparison and conclusions
+
+**ML Baseline**
+
+* Logistic Regression
+* Uses the same features as the rule-based approach
+* No tuning or advanced feature engineering
+
+**Result**
+
+* ML and rule-based scores are highly similar (e.g. 20/100 vs 23/100)
+* ML is slower and less interpretable
+
+**Decision**
+The rule-based approach is retained as the core solution. The ML model serves only as a **benchmark**, confirming that the rules capture real data patterns.
+
 ---
 
-## Delay Risk Prediction (No ML)
+## Key Takeaway
 
-* User inputs; airline, route, flight date, time of date.
-* Each factor contributes a risk based on historical behavior.
-* Scores are aggregated into an overall risk level (low/medium/high).
-* Output includes clear explanation of why the risk is high or low.
+Instead of defaulting to machine learning, this project shows that:
 
-## Why no Machine Learning?
+* Simple, data-driven rules can match ML performance
+* Explainability and stability matter for real-world use
+* ML is most valuable when used as a benchmark, not by default
 
-* The objective is **interpretability**, not black-box prediction.
-* Historical flight delays are highly context-dependent and noisy.
-* Rule-based scoring allows transparent logic, clear reasoning for each risk factor, and easier validation and communication.
+---
+
+## Notes
+
+* Shiny App = product & explanation
+* Python Script = analysis & evidence
+
+This separation reflects real-world analytics and decision-support system design.
