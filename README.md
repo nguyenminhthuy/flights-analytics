@@ -86,3 +86,15 @@ Instead of defaulting to machine learning, this project shows that:
 * Python Script = analysis & evidence
 
 This separation reflects real-world analytics and decision-support system design.
+
+---
+
+## Design Rationale
+
+* Uses a rule-based risk scoring approach in production for speed, stability, and explainability
+
+* All scoring weights are calibrated offline in Python using historical delay distributions (median, p75, p90)
+
+* A lightweight ML baseline is used only for validation, not for deployment
+
+* Clear separation between offline analysis (Python) and online inference (R Shiny) for maintainability
